@@ -1,0 +1,30 @@
+# 개발 환경용 Docker Compose (PostgreSQL만 실행)
+#
+# 사용법:
+#   1. docker compose up -d
+#   2. .env 에 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/where_train 설정
+#   3. pnpm dev
+#
+# 마이그레이션: pnpm drizzle-kit push (또는 migrate)
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: where-train-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: where_train
+    ports:
+      - "35432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
