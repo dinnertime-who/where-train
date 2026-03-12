@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { TooltipProvider } from "@/components/shadcn/tooltip";
+import { TanstackQueryProvider } from "@/integrations/tanstack-query/provider";
+import { Toaster } from "@/components/shadcn/sonner";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { ViewTransition } from "react";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,11 +31,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable)}>
+    <html lang="ko" className={cn("font-sans", inter.variable)}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <TooltipProvider>
+          <TanstackQueryProvider>
+            <NuqsAdapter>
+              <ViewTransition>{children}</ViewTransition>
+            </NuqsAdapter>
+
+            <Toaster />
+          </TanstackQueryProvider>
+        </TooltipProvider>
       </body>
     </html>
   );
